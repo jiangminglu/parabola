@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PropertyValuesHolder pvhX = PropertyValuesHolder.ofKeyframe("translationX", keyXframes);
         PropertyValuesHolder pvhY = PropertyValuesHolder.ofKeyframe("translationY", keyYframes);
 
-        ObjectAnimator yxBouncer = ObjectAnimator.ofPropertyValuesHolder(imageView, pvhY, pvhX).setDuration(16000);
+        ObjectAnimator yxBouncer = ObjectAnimator.ofPropertyValuesHolder(imageView, pvhY, pvhX).setDuration(600);
         ObjectAnimator rotation = ObjectAnimator.ofFloat(imageView, "rotation", 0F, 360F);
         rotation.setDuration(20).setRepeatMode(ValueAnimator.INFINITE);
 
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(yxBouncer,rotation);
-        animatorSet.setDuration(16000);
+        animatorSet.setDuration(600);
         animatorSet.start();
 
 

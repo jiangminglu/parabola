@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         int[] locationEnd = new int[2];
         cartImg.getLocationInWindow(locationEnd);
-        locationEnd[1] = locationEnd[1] - cartImg.getLayoutParams().height;
+        locationEnd[0]=locationEnd[0]+40;//这里的40是一个偏移量,为了保证落入购物车中
+        locationEnd[1] = locationEnd[1] - cartImg.getLayoutParams().height-60;//这里的60是一个偏移量,为了保证落入购物车中
         Log.e("location_end", "(" + locationEnd[0] + "," + locationEnd[1] + ")");
 
 
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PropertyValuesHolder pvhX = PropertyValuesHolder.ofKeyframe("translationX", keyXframes);
         PropertyValuesHolder pvhY = PropertyValuesHolder.ofKeyframe("translationY", keyYframes);
 
-        ObjectAnimator yxBouncer = ObjectAnimator.ofPropertyValuesHolder(imageView, pvhY, pvhX).setDuration(600);
+        ObjectAnimator yxBouncer = ObjectAnimator.ofPropertyValuesHolder(imageView, pvhY, pvhX).setDuration(16000);
         ObjectAnimator rotation = ObjectAnimator.ofFloat(imageView, "rotation", 0F, 360F);
         rotation.setDuration(20).setRepeatMode(ValueAnimator.INFINITE);
 
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(yxBouncer,rotation);
-        animatorSet.setDuration(600);
+        animatorSet.setDuration(16000);
         animatorSet.start();
 
 

@@ -1,13 +1,16 @@
 package com.luffy.parabola;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.Keyframe;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,8 +34,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private float b = 0;
     private float c = 0;
 
+    private int num = 0;
     private RelativeLayout mainContentLayout;
-    private ImageView cartImg;
+    private ImageView cartImg,itemImg;
     private Button addBtn;
     private TextView numTv;
     private Context mContext = this;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void init() {
         mainContentLayout = (RelativeLayout) findViewById(R.id.main_content_layout);
+        itemImg = (ImageView) findViewById(R.id.item_img);
         cartImg = (ImageView) findViewById(R.id.cart_img);
         addBtn = (Button) findViewById(R.id.add_btn);
         numTv = (TextView) findViewById(R.id.num_tv);
@@ -59,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void addAnimImg() {
         animImg = new ImageView(mContext);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
+        Drawable drawable = itemImg.getBackground();
+        animImg.setImageDrawable(drawable);
         animImg.setBackgroundColor(Color.BLACK);
         animImg.setVisibility(View.INVISIBLE);
         animImg.setLayoutParams(params);
@@ -69,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v1) {
 
 
+        num++;
         //获取顶点坐标
         int[] locationCenter = new int[2];
         animImg.getLocationInWindow(locationCenter);
@@ -98,16 +106,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         count = locationEnd[0] - locationCenter[0];
         calculate(points);
-        startAnimation(animImg, locationCenter[0], locationEnd[1]);
+        startAnimation(animImg, locationCenter[0]);
     }
 
 
     /**
-     * 要start 动画的那张图片的ImageView
+     * 开始动画
      *
      * @param imageView
+     * @param start     这里使用start 主要是为了计算y轴的位移.
      */
-    private void startAnimation(final View imageView, int start, int end) {
+    private void startAnimation(final View imageView, int start) {
 
         Keyframe[] keyXframes = new Keyframe[count];
         Keyframe[] keyYframes = new Keyframe[count];
@@ -115,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         float key = keyStep;
         for (int i = 0; i < count; ++i) {
             int x = i + 1;
-            float y = getY(x+start);
+            float y = getY(x + start);
             keyXframes[i] = Keyframe.ofFloat(key, x);
             keyYframes[i] = Keyframe.ofFloat(key, y);
             key += keyStep;
@@ -124,17 +133,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PropertyValuesHolder pvhY = PropertyValuesHolder.ofKeyframe("translationY", keyYframes);
 
         ObjectAnimator yxBouncer = ObjectAnimator.ofPropertyValuesHolder(imageView, pvhY, pvhX).setDuration(600);
+        ObjectAnimator rotation = ObjectAnimator.ofFloat(imageView, "rotation", 0F, 360F);
+        rotation.setDuration(20).setRepeatMode(ValueAnimator.INFINITE);
+
         yxBouncer.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
                 imageView.setVisibility(View.VISIBLE);
+                addBtn.setClickable(false);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (num > 0) {
+                    numTv.setVisibility(View.VISIBLE);
+                    numTv.setText(num + "");
+                }
                 mainContentLayout.removeView(animImg);
                 animImg.clearAnimation();
                 addAnimImg();
+                addBtn.setClickable(true);
             }
 
             @Override
@@ -147,7 +165,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-        yxBouncer.start();
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(yxBouncer,rotation);
+        animatorSet.setDuration(600);
+        animatorSet.start();
+
+
     }
 
 

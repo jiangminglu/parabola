@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,19 +55,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         addBtn.setOnClickListener(this);
     }
-    private void addAnimImg(){
+
+    private void addAnimImg() {
         animImg = new ImageView(mContext);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
         animImg.setBackgroundColor(Color.BLACK);
-        animImg.setVisibility(View.GONE);
+        animImg.setVisibility(View.INVISIBLE);
         animImg.setLayoutParams(params);
         mainContentLayout.addView(animImg);
     }
 
     @Override
     public void onClick(View v1) {
-
-
 
 
         //获取顶点坐标
@@ -78,15 +78,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int statusBarHeight = frame.top;
         int actionbarH = 0;
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null && actionBar.isShowing()){
+        if (actionBar != null && actionBar.isShowing()) {
             actionbarH = actionBar.getHeight();
         }
-        locationCenter[1] = locationCenter[1]-statusBarHeight-actionbarH;
+        locationCenter[1] = locationCenter[1] - statusBarHeight - actionbarH;
         Log.e("location_center", "(" + locationCenter[0] + "," + locationCenter[1] + ")");
 
         int[] locationEnd = new int[2];
         cartImg.getLocationInWindow(locationEnd);
-        locationEnd[1] = locationEnd[1]-cartImg.getLayoutParams().height;
+        locationEnd[1] = locationEnd[1] - cartImg.getLayoutParams().height;
         Log.e("location_end", "(" + locationEnd[0] + "," + locationEnd[1] + ")");
 
 
@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final float keyStep = 1f / (float) count;
         float key = keyStep;
         for (int i = 0; i < count; ++i) {
-            int x = i + 1 + start;
-            float y = getY(x);
+            int x = i + 1;
+            float y = getY(x+start);
             keyXframes[i] = Keyframe.ofFloat(key, x);
             keyYframes[i] = Keyframe.ofFloat(key, y);
             key += keyStep;

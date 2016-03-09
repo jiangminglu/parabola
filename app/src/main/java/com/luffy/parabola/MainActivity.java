@@ -29,8 +29,8 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //分300步进行移动动画
-    int count = 300;
-    private float a = -1f / 75f;
+    int count = 0;
+    private float a = 0;
     private float b = 0;
     private float c = 0;
 
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Keyframe[] keyYframes = new Keyframe[count];
         final float keyStep = 1f / (float) count;
         float key = keyStep;
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; i++) {
             int x = i + 1;
             float y = getY(x + start);
             keyXframes[i] = Keyframe.ofFloat(key, x);
@@ -177,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /**
-     * 这里是根据三个坐标点{（0,0），（300,0），（150,300）}计算出来的抛物线方程
      *
      * @param x
      * @return
